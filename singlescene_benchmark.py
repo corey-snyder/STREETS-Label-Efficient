@@ -150,23 +150,13 @@ def test_graynet(folder_path, views, n_train_list):
 
 if __name__ == '__main__':
     save_path = 'single-scene-benchmark'
-    folders = ['SingleSceneGrayNetLargeCrop']
+    folders = ['MyLogs']
     views = ['Aptakisic at Leider West', 'Deerfield at Saunders South', 'Dilleys at Stearns School South', 'IL 21 at IL 60 West', 'US 45 at Deerpath North']
     n_train_list = [5, 10, 20]
     for folder in folders:
         folder_path = os.path.join('logs', folder)
         print('Compiling results from: {}...'.format(folder))
-        if 'RPCANet' in folder:
-            results_dict = test_rpcanet(folder_path, views)
-        elif 'GrayNet' in folder:
-            results_dict = test_graynet(folder_path, views, n_train_list)
-        elif 'SequenceUNet' in folder:
-            results_dict = test_sequence_unet(folder_path, views, n_train_list)
-        elif 'UNet' in folder or 'FgSegNet' in folder:
-            results_dict = test_unet(folder_path, views, n_train_list)
-        else:
-            print('Error: could not identify model for {}'.format(folder))
-            raise ValueError
+        results_dict = test_unet(folder_path, views,n _train_list) 
         # save results
         with open(os.path.join(save_path, '{}.json'.format(folder)), 'w') as f:
             json.dump(results_dict, f)
