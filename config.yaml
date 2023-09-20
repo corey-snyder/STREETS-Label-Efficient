@@ -1,0 +1,16 @@
+# learning parameters
+lr: 1e-2
+batch_size: 4
+n_epochs: 200
+milestones: [0.9]
+
+# experiment and logging info
+images_path: 'Semantic-Images'
+gt_path: 'Semantic-Annotations'
+seeds: [1, 2, 3, 4, 5]
+views: ['Aptakisic at Leider West', 'Deerfield at Saunders South', 'Dilleys at Stearns School South', 'IL 21 at IL 60 West', 'US 45 at Deerpath North'] 
+n_train: 20
+input_shape: [480, 720]
+output_shape: [480, 720]
+crop_size: None
+log_path: 'logs/MyLogs'
