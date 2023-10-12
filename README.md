@@ -4,17 +4,6 @@ This repository provides helpful starter code to run baseline single-scene backg
 ## Downloading the data
 After cloning this repository, you should download the ``Semantic-Annotations.zip`` and ``Semantic-Images.zip`` file from our shared Box folder. If you plan to work locally on your own machine, you can unzip these folders to the same path as this repository. If you would like to use Google Colab, you should unzip the files locally and then upload all the images to a dedicated folder on your Google Drive to prevent image loss from unzipping within Google Drive.
 
-## Overview of provided codes and files
-A brief explanation of each provided file is given below.
-
-### ``dataset.py``
-### ``models.py``
-### ``train.py``
-### ``quantitative_evaluation.py``
-### ``singlescene_benchmark.py``
-### ``unet_singlescene_main.py``
-### ``config.yaml``
-
 ## Running an experiment
 The intended workflow for running baseline experiments should be fairly straightforward where very little needs to be edited within the files to run a simple baseline experiment. You may write your own codes or make additional tweaks as you explore your own experiments.
 ### Setting ``config.yaml``
@@ -49,3 +38,24 @@ Once these four items are set, you can compile all your evaluation results by ru
 The evaluation results for each logging folder will be save in a separate JSON file within your ``save_path`` folder.
 
 ### Processing and examining results
+The saved JSON file for each logging path folder contains a nested dictionary where we need to specify number of training images, training scene, and testing scene. For example, let ``results_dict`` be the loaded dictioanry from one such JSON file. If we assign ``curr_results = results_dict[10]['Almond at Washington East']['Hunt Club at Washington West']``, we will have a list of evaluation result dictionaries stored in ``curr_results``. The length of ``curr_results`` will correspond to the number of random seeds used to train models on the training scene, "Almond at Washington East" in this case, for the given number of training images, 10 in this case. Thus, if we have 3 random seeds, ``curr_results`` will be a length-3 list where ``curr_results[0]`` would give us one evaluation results dictionary for training on "Almond at Washington East" with 10 training images and then evaluating this one model on the "Hunt Club at Washington West" scene.
+
+The evaluation results dictionary stored in ``curr_results[0]`` (or ``curr_results[1]`` and ``curr_results[2]`` as well) contain several evaluation metrics computed within the ``quantitative_evaluation.py`` file. Continuing this example, let ``curr_evaluation_dict = curr_results[0]``. The main metrics that are a good starting point are the F-measure, precision, and recall of each model. To get these values we can use the following lines of code:
+
+``model_f_measure = curr_evaluation_dict['Total']['F-measure']``
+``model_precision = curr_evaluation_dict['Total']['Precision']``
+``model_recall = curr_evaluation_dict['Total']['Recall']``
+
+There are many other available metrics in these dictionaries, but these should be a good starting point for evaluation. Finally, if we take the model's F-measure across the 3 random seeds in this example, we can find the average F-measure for training on "Almond at Washington East" with 10 labeled images and evaluating on "Hunt Club at Washington West". We may also find the standard deviation of the F-measure or also look at precision and recall, respectively.
+
+
+## Overview of provided codes and files
+A brief explanation of each provided file is given below.
+
+### ``dataset.py``
+### ``models.py``
+### ``train.py``
+### ``quantitative_evaluation.py``
+### ``singlescene_benchmark.py``
+### ``unet_singlescene_main.py``
+### ``config.yaml``
