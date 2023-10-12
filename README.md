@@ -43,7 +43,9 @@ The saved JSON file for each logging path folder contains a nested dictionary wh
 The evaluation results dictionary stored in ``curr_results[0]`` (or ``curr_results[1]`` and ``curr_results[2]`` as well) contain several evaluation metrics computed within the ``quantitative_evaluation.py`` file. Continuing this example, let ``curr_evaluation_dict = curr_results[0]``. The main metrics that are a good starting point are the F-measure, precision, and recall of each model. To get these values we can use the following lines of code:
 
 ``model_f_measure = curr_evaluation_dict['Total']['F-measure']``
+
 ``model_precision = curr_evaluation_dict['Total']['Precision']``
+
 ``model_recall = curr_evaluation_dict['Total']['Recall']``
 
 There are many other available metrics in these dictionaries, but these should be a good starting point for evaluation. Finally, if we take the model's F-measure across the 3 random seeds in this example, we can find the average F-measure for training on "Almond at Washington East" with 10 labeled images and evaluating on "Hunt Club at Washington West". We may also find the standard deviation of the F-measure or also look at precision and recall, respectively.
