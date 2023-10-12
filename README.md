@@ -31,5 +31,21 @@ The remaining parameters are up to how you want to run your experiment:
 * ``crop_size``: Optional argument to specify a square random cropping size to enable image augmentation while training. You may leave this as ``None`` to have no cropping or pick a number less than the image height. The smaller the crop size, the longer you will likely need to train your models. I recommend not cropping images to start, but you may explore it in the future.
 * ``log_path``: Path to where logs will be saved. These logs include the model weights that can be loaded later for evaluation purposes and Tensorboard logs. More on Tensorboard later! 
 ### Training models
+Once the ``config.yaml`` file is set to your liking, training models is very simple. You only need to run the following command in your terminal or in Google Colab:
+
+``python3 unet_singlescene_main.py --config_path config.yaml``
+
+This will execute all the training runs and save the experiment models and logs to the ``log_path`` folder for each pair of (random seed, view). When picking your number of random seeds and views/scenes. Consider that you will be training "number of seeds"x"number of scenes models". On GPU, each (seed, view) trial should take only 5-10 minutes so you can base your config files off this information.
+
 ### Evaluating models
+Once you have a collection of experimental trials contained in a folder, e.g. specified by ``log_path`` in your config file, we can evaluate all these trials and aggregate the results and do some evaluation. Note that within your ``log_path`` folder, each (seed, view) pair will have its own subfolder. For example, if you train models for 3 random seeds and 2 different scenes, you will have 6 subfolders in your logging path folder. To aggregate these results, you only need to edit four items in the ``singlescene_benchmark.py`` file.
+
+First, you should specify the name of a folder for the ``save_path`` variable to save evaluation results. Make sure to create this folder before running this code. Second, specify the name of your logging path(s) you would like to evaluate. Referring to the previous example, if your logging path is named "MyLogs" and contains the 6 subfolders from training models on 2 scenes with three random seeds, you can just assign the ``folders`` variable as ``['MyLogs']``. This variable is a list in case you may have multiple distinct sets of experiments you want to evaluate separately. Next, specify the names of the scenes you would like evaluated with the ``views`` list. Lastly, ``n_train_list`` gives the number of training images you used for each (seed, view) pair. For example, if you trained all models with only 10 labeled images, then ``n_train_list=[10]``. If instead you tried 5 and 15 labeled images for each (seed, view) pair, then ``n_train_list=[5, 15]``.
+
+Once these four items are set, you can compile all your evaluation results by running the following command:
+
+``python3 singlescene_benchmark.py``
+
+The evaluation results for each logging folder will be save in a separate JSON file within your ``save_path`` folder.
+
 ### Processing and examining results
