@@ -32,7 +32,7 @@ if __name__ == '__main__':
             # create datasets
             input_shape, output_shape = config['input_shape'], config['output_shape']
             images_path, gt_path = config['images_path'], config['gt_path']
-            dataset = BFSEvaluationDataset(images_path, gt_path, view, input_shape, output_shape)
+            dataset = SemanticBFSDataset(images_path, gt_path, view, input_shape, output_shape)
             n_train = config['n_train']
             train_indices = np.random.choice(np.arange(len(dataset)), size=n_train, replace=False)
             val_indices = np.array([i for i in np.arange(len(dataset)) if i not in train_indices])
