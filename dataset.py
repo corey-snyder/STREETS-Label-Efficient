@@ -70,33 +70,32 @@ class BBoxBFSDataset(Dataset):
 
         # load images and targets
         self.file_paths = []
-        self.images, self.targets, self.label_times = [], [], []
-        for v in views:
-            view_dict = all_gt[v]
-            for date in view_dict:
-                date_dict = view_dict[date]
-                for image_name in date_dict:        
-                    full_image_path = os.path.join(self.images_path, v, date, image_name.replace('.png', '.jpg'))
-                    if os.path.exists(full_image_path):
-                        self.file_paths.append(f)
-                        # input image
-                        input_image = imread(full_image_path)
-                        original_H, original_W = input_image.shape[0], input_image.shape[1]
-                        if input_image.shape[0] != self.input_shape[0] or input_image.shape[1] != self.input_shape[1]:
-                            input_image = resize(input_image, self.input_shape)
-                        input_image[:self.top_trim] = 0
-                        self.images.append(torch.from_numpy(input_image).permute(2, 0, 1).float())
-                        # ground-truth
-                        original_bboxes = all_gt[v][date][image_name]
-                        height_dilation = self.output_shape[0]/original_H
-                        width_dilation = self.output_shape[1]/original_W
-                        # adjust bbox coordinates (in [xmin, ymin, xmax, ymax] format)
-                        save_bboxes = [[b[0]*width_dilation, b[1]*height_dilation, b[2]*width_dilation, b[3]*height_dilation] for b in original_bboxes]
-                        # self.targets[i] is a list of bounding-box coordinates
-                        # self.targets[i][j] gives (xmin, ymin, xmax, ymax) for box j from image i
-                        self.targets.append(save_bboxes)
-                        # get labeling time
-                        self.label_times.append(float(label_time_dict[view][image_name]))
+        self.images, self.targets, self.label_times = [], [], [] 
+            
+        view_dict = all_gt[view]
+        for date in view_dict:
+            date_dict = view_dict[date]
+            for image_name in date_dict:        
+                full_image_path = os.path.join(self.images_path, view, date, image_name)
+                if os.path.exists(full_image_path):
+                    self.file_paths.append(f)
+                    # input image
+                    input_image = imread(full_image_path)
+                    original_H, original_W = input_image.shape[0], input_image.shape[1] 
+                    input_image = resize(input_image, self.input_shape)
+                    input_image[:self.top_trim] = 0
+                    self.images.append(torch.from_numpy(input_image).permute(2, 0, 1).float())
+                    # ground-truth
+                    original_bboxes = all_gt[view][date][image_name]
+                    height_dilation = self.output_shape[0]/original_H
+                    width_dilation = self.output_shape[1]/original_W
+                    # adjust bbox coordinates (in [xmin, ymin, xmax, ymax] format)
+                    save_bboxes = [[b[0]*width_dilation, b[1]*height_dilation, b[2]*width_dilation, b[3]*height_dilation] for b in original_bboxes]
+                    # self.targets[i] is a list of bounding-box coordinates
+                    # self.targets[i][j] gives (xmin, ymin, xmax, ymax) for box j from image i
+                    self.targets.append(save_bboxes)
+                    # get labeling time
+                    self.label_times.append(float(label_time_dict[view][image_name]))
         self.file_paths = np.array(self.file_paths)
         self.label_times = np.array(self.label_times) 
 
